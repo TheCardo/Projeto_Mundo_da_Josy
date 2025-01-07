@@ -10,6 +10,7 @@ CREATE TABLE IF NOT EXISTS clientes (
     data_nascimento TEXT NOT NULL,
     cpf TEXT NOT NULL
 )
+)
                
 ''')
 
@@ -32,7 +33,8 @@ CREATE TABLE IF NOT EXISTS vendas (
     id_cliente INTEGER,
     id_produto INTEGER,
     FOREIGN KEY(id_cliente) REFERENCES clientes(id),
-    FOREIGN KEY(id_produto) REFERENCES produtos(id))
+    FOREIGN KEY(id_produto) REFERENCES produtos(id)
+)
                
 ''')
 
