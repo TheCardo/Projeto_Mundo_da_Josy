@@ -1,5 +1,6 @@
 import sqlite3
-con = sqlite3.connect("Mundo_da_Josy.db")
-cursor = con.cursor()
+banco = sqlite3.connect("Mundo_da_Josy.db")
+cursor = banco.cursor()
+cursor.execute("CREATE TABLE clientes (nome, telefone,data de nascimento, cpf) ")
 
-cursor.execute("CREATE TABLE clientes ")
+cursor.execute ("CREATE TABLE produtos (id, nome, marca, categoria, lote, validade)")
