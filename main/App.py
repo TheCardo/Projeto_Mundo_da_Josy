@@ -22,4 +22,22 @@ def adicionar_clientes(nome, telefone, data_nascimento, cpf):
         return f"Erro ao adicionar cliente: {erro}"
     finally:
         banco.close()
-adicionar_clientes('ricardo', '81994602580', '4/12/2003', '12345678912')
+
+def adicionar_produtos(nome, marca, categoria, lote, validade):
+    if not validar_validade(validade):
+        return 'data de validade inválida'
+    try:
+        banco = sqlite3.connect("Mundo_da_Josy.db")
+        cursor = banco.cursor()
+
+        cursor.execute("""INSERT INTO produtos (nome, marca, categoria, lote, validade)
+                       VALUES(?,?,?,?)
+                       """,(nome, marca, categoria, lote, validade))
+        banco.commit()
+        return "produto adicionado com sucesso!"
+    except sqlite3.error as erro:
+        return f"Erro ao adicionar produto: {erro}"
+    finally:
+        banco.close()
+
+adicionar_clientes("ryan", "81993642374", "12/6/2003", "12456787654")
