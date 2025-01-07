@@ -9,6 +9,7 @@ CREATE TABLE IF NOT EXISTS clientes (
     telefone TEXT NOT NULL,
     data_nascimento TEXT NOT NULL,
     cpf TEXT NOT NULL
+)
                
 ''')
 
@@ -19,7 +20,8 @@ CREATE TABLE IF NOT EXISTS produtos (
     marca TEXT NOT NULL,
     categoria TEXT NOT NULL,
     lote TEXT NOT NULL,
-    validade TEXT NOT NULL   
+    validade TEXT NOT NULL
+)   
                              
 ''')
 
@@ -31,7 +33,8 @@ CREATE TABLE IF NOT EXISTS vendas (
     id_cliente INTEGER,
     id_produto INTEGER,
     FOREIGN KEY(id_cliente) REFERENCES clientes(id),
-    FOREIGN KEY(id_produto) REFERENCES produtos(id))
+    FOREIGN KEY(id_produto) REFERENCES produtos(id)
+)
                
 ''')
 
