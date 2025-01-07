@@ -8,7 +8,7 @@ def adicionar_clientes(nome, telefone, data_nascimento, cpf):
     if not validar_telefone(telefone):
         return 'telefone invalido'
     if not validar_data_nascimento(data_nascimento):
-        return 'data de nascimento invalida'
+        return 'data de nascimento invalida' 
     try:
         banco = sqlite3.connect("Mundo_da_Josy.db")
         cursor = banco.cursor()
