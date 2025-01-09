@@ -1,6 +1,6 @@
 import sqlite3
 from datetime import datetime
-from validadores import validar_cpf, validar_data_nascimento, validar_telefone
+from validadores import validar_cpf, validar_data_nascimento, validar_telefone, validar_validade
 
 def adicionar_clientes(nome, telefone, data_nascimento, cpf):
     if not validar_cpf(cpf):
@@ -40,4 +40,3 @@ def adicionar_produtos(nome, marca, categoria, lote, validade):
     finally:
         banco.close()
 
-adicionar_clientes("ryan", "81993642374", "12/6/2003", "12456787654")

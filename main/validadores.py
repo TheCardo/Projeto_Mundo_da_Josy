@@ -15,3 +15,9 @@ def validar_data_nascimento(data_nascimento):
     except ValueError:
         return False
        
+def validar_validade(validade):
+    try:
+        datetime.strptime(validade, "%d/%m/%Y")
+        return True
+    except ValueError:
+        return False

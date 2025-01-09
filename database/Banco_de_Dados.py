@@ -8,8 +8,7 @@ CREATE TABLE IF NOT EXISTS clientes (
     nome TEXT NOT NULL,
     telefone TEXT NOT NULL,
     data_nascimento TEXT NOT NULL,
-    cpf TEXT NOT NULL
-)
+    cpf TEXT NOT NULL)
                
 ''')
 
@@ -19,6 +18,7 @@ CREATE TABLE IF NOT EXISTS produtos (
     nome TEXT NOT NULL,
     marca TEXT NOT NULL,
     categoria TEXT NOT NULL,
+    quantidade INTEGER NOT NULL,
     lote TEXT NOT NULL,
     validade TEXT NOT NULL)
                              
