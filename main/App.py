@@ -35,15 +35,63 @@ def adicionar_produtos(nome, marca, categoria, lote, validade, quantidade):
         cursor = banco.cursor()
 
         cursor.execute("""INSERT INTO produtos (nome, marca, categoria, lote, validade, quantidade)
-                       VALUES(?,?,?,?,?)
+                       VALUES(?,?,?,?,?,?)
                        """,(nome, marca, categoria, lote, validade, quantidade))
         banco.commit()
         return "produto adicionado com sucesso!"
-    except sqlite3.error as erro:
+    except sqlite3.Error as erro:
         return f"Erro ao adicionar produto: {erro}"
     finally:
         banco.close()
 
+
+def listar_produtos():
+
+    banco = sqlite3.connect("Mundo_da_Josy.db")
+    cursor = banco.cursor()
+
+    cursor.execute('SELECT * FROM produtos')
+    for linha in cursor.fetchall():
+        print (linha)
+
+
+    banco.close()
+    
+ 
+def editar_produtos(id, nova_quantidade):
+    
+    banco = sqlite3.connect("Mundo_da_Josy.db")
+    cursor = banco.cursor()
+    
+    cursor.execute("SELECT nome, quantidade From produtos Where id = ?",(id,))
+    produto = cursor.fetchone()
+    if produto is None:
+        print ( f"produto com {id} não encontrado.")
+    else:
+        nome_do_produto, quantidade_anterior = produto
+        print (f"produto encontrado: {nome_do_produto}")
+        print (f" quantidade antes: {quantidade_anterior} | quantidade atual {nova_quantidade}")
+    
+    
+    cursor.execute("""
+                   
+            UPDATE  produtos
+            SET quantidade = ? 
+            WHERE id = ?
+                   
+            """,(nova_quantidade, id))
+    
+    banco.commit()
+    banco.close()
+
+
+def excluir_produto(id,nome):
+    banco = sqlite3.connect("Mundo_da_Josy.db")
+    cursor = banco.cursor()
+    cursor.execute (' DELETE FROM produtos WHERE id = ?',(id,))
+    
+    banco.commit()
+    banco.close()
 def realizar_venda(valor, data, id_cliente, id_produto):
     try:
         banco = sqlite3.connect("Mundo_da_Josy.db")
@@ -76,3 +124,11 @@ def realizar_venda(valor, data, id_cliente, id_produto):
         return f"Erro ao registrar venda: {erro}"
     finally:
         banco.close()
+
+
+#adicionar_clientes("Chico", "81989668877","20/05/2003","12345678910")
+#adicionar_produtos("ilia","natura","perfume","35","20/05/2027",15)
+#print(adicionar_produtos("Produto Teste", "Marca Teste", "Categoria Teste", "123", "31/12/2025", 10))
+#listar_produtos()
+#excluir_produto(8,"Produto Teste")
+editar_produtos(1,10)
