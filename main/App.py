@@ -13,6 +13,7 @@ def adicionar_clientes(nome, telefone, data_nascimento, cpf):
         return 'telefone invalido'
     if not validar_data_nascimento(data_nascimento):
         return 'data de nascimento invalida' 
+    banco = None
     try:
         banco = sqlite3.connect("Mundo_da_Josy.db")
         cursor = banco.cursor()
@@ -23,13 +24,17 @@ def adicionar_clientes(nome, telefone, data_nascimento, cpf):
         banco.commit()
         return "Cliente adicionado com sucesso!"
     except sqlite3.Error as erro:
+        if banco:
+            banco.rollback()
         return f"Erro ao adicionar cliente: {erro}"
     finally:
-        banco.close()
+        if banco:
+            banco.close()
 
 def adicionar_produtos(nome, marca, categoria, lote, validade, quantidade):
     if not validar_validade(validade):
         return 'data de validade inválida'
+    banco = None
     try:
         banco = sqlite3.connect("Mundo_da_Josy.db")
         cursor = banco.cursor()
@@ -40,59 +45,83 @@ def adicionar_produtos(nome, marca, categoria, lote, validade, quantidade):
         banco.commit()
         return "produto adicionado com sucesso!"
     except sqlite3.Error as erro:
+        if banco:
+            banco.rollback()
         return f"Erro ao adicionar produto: {erro}"
     finally:
-        banco.close()
+        if banco:
+            banco.close()
 
 
 def listar_produtos():
+    banco = None
+    try:
+        banco = sqlite3.connect("Mundo_da_Josy.db")
+        cursor = banco.cursor()
 
-    banco = sqlite3.connect("Mundo_da_Josy.db")
-    cursor = banco.cursor()
+        cursor.execute('SELECT * FROM produtos')
+        produtos = cursor.fetchall()
+        return produtos
+    except sqlite3.Error as erro:
+        return f"Erro ao listar produtos: {erro}"
+    finally:
+        if banco:
+            banco.close()
 
-    cursor.execute('SELECT * FROM produtos')
-    for linha in cursor.fetchall():
-        print (linha)
-
-
-    banco.close()
-    
  
 def editar_produtos(id, nova_quantidade):
+    banco = None
+    try:
+        banco = sqlite3.connect("Mundo_da_Josy.db")
+        cursor = banco.cursor()
+        cursor.execute("SELECT nome, quantidade From produtos Where id = ?",(id,))
+        produto = cursor.fetchone()
+        if produto is None:
+            print ( f"produto com {id} não encontrado.")
+        else:
+            nome_do_produto, quantidade_anterior = produto
+            print (f"produto encontrado: {nome_do_produto}")
+            print (f" quantidade antes: {quantidade_anterior} | quantidade atual {nova_quantidade}")
+        
+        
+        cursor.execute("""
+                    
+                UPDATE  produtos
+                SET quantidade = ? 
+                WHERE id = ?
+                    
+                """,(nova_quantidade, id))
     
-    banco = sqlite3.connect("Mundo_da_Josy.db")
-    cursor = banco.cursor()
-    
-    cursor.execute("SELECT nome, quantidade From produtos Where id = ?",(id,))
-    produto = cursor.fetchone()
-    if produto is None:
-        print ( f"produto com {id} não encontrado.")
-    else:
-        nome_do_produto, quantidade_anterior = produto
-        print (f"produto encontrado: {nome_do_produto}")
-        print (f" quantidade antes: {quantidade_anterior} | quantidade atual {nova_quantidade}")
-    
-    
-    cursor.execute("""
-                   
-            UPDATE  produtos
-            SET quantidade = ? 
-            WHERE id = ?
-                   
-            """,(nova_quantidade, id))
-    
-    banco.commit()
-    banco.close()
+        banco.commit()
+    except sqlite3.Error as erro:
+        if banco:
+            banco.rollback()
+            return f'erro ao editar o produto: {erro}'
+    finally:
+        if banco:
+            banco.close()
+
+
+
 
 
 def excluir_produto(id,nome):
-    banco = sqlite3.connect("Mundo_da_Josy.db")
-    cursor = banco.cursor()
-    cursor.execute (' DELETE FROM produtos WHERE id = ?',(id,))
-    
-    banco.commit()
-    banco.close()
-def realizar_venda(valor, data, id_cliente, id_produto):
+    banco = None
+    try:
+        banco = sqlite3.connect("Mundo_da_Josy.db")
+        cursor = banco.cursor()
+        cursor.execute (' DELETE FROM produtos WHERE id = ?',(id,))
+        banco.commit()
+    except sqlite3.Error as erro:
+        if banco:
+            banco.rollback()
+        return f"Erro ao excluir produto: {erro}"
+    finally:
+        if banco:
+            banco.close()
+
+def realizar_venda(valor, quantidade, id_cliente, id_produto):
+    banco = None
     try:
         banco = sqlite3.connect("Mundo_da_Josy.db")
         cursor = banco.cursor()
@@ -121,9 +150,12 @@ def realizar_venda(valor, data, id_cliente, id_produto):
         banco.commit()
         return "Venda registrada com sucesso!"
     except sqlite3.Error as erro:
+        if banco:
+            banco.rollback()
         return f"Erro ao registrar venda: {erro}"
     finally:
-        banco.close()
+        if banco:
+            banco.close()
 
 
 #adicionar_clientes("Chico", "81989668877","20/05/2003","12345678910")
@@ -131,4 +163,3 @@ def realizar_venda(valor, data, id_cliente, id_produto):
 #print(adicionar_produtos("Produto Teste", "Marca Teste", "Categoria Teste", "123", "31/12/2025", 10))
 #listar_produtos()
 #excluir_produto(8,"Produto Teste")
-editar_produtos(1,10)

@@ -6,9 +6,9 @@ cursor.execute('''
 CREATE TABLE IF NOT EXISTS clientes (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     nome TEXT NOT NULL,
-    telefone TEXT NOT NULL,
-    data_nascimento TEXT NOT NULL,
-    cpf TEXT NOT NULL)
+    telefone INTEGER NOT NULL,
+    data_nascimento DATE NOT NULL,
+    cpf INTEGER NOT NULL)
                
 ''')
 
@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS produtos (
     categoria TEXT NOT NULL,
     quantidade INTEGER NOT NULL,
     lote TEXT NOT NULL,
-    validade TEXT NOT NULL)
+    validade DATE NOT NULL)
                              
 ''')
 
@@ -28,7 +28,7 @@ cursor.execute('''
 CREATE TABLE IF NOT EXISTS vendas (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     valor REAL NOT NULL,
-    data TEXT NOT NULL,
+    data DATE NOT NULL,
     id_cliente INTEGER,
     id_produto INTEGER,
     FOREIGN KEY(id_cliente) REFERENCES clientes(id),
