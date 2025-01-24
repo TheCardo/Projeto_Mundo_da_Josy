@@ -1,5 +1,5 @@
 import sqlite3
-banco = sqlite3.connect("Mundo_da_Josy.db")
+banco = sqlite3.connect("estoX.db")
 cursor = banco.cursor()
 
 cursor.execute('''
