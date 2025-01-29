@@ -1,4 +1,4 @@
-import streamlit as st
+import streamlit as st 
 import pandas as pd
 import sqlite3
 import sys
@@ -7,83 +7,55 @@ import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from App import adicionar_produtos, listar_clientes, listar_produtos
 from pacote.sub_pacote import funcoes
+from pages.produtos.cad_produto import CadatrarProdutosPage
+from pages.produtos.list_produtos import ListarProdutosPage
+from pages.clientes.cad_clientes import IncluirClientePage
+from pages.clientes.list_clientes import ListarClientesPage
 
-st.title("Gerencie o seu Estoque com o estoX!")
 
-menu = st.sidebar.radio("Selecione uma funcionalidade:", [
-    "Ínicio",
+
+imagem = st.sidebar.image("https://sege.srv.br/wp-content/uploads/2021/10/5ee8e10210dbd8439785751b_5daa1277c1c1cb186839b46f_a-gestao-de-estoque-nao-pode-ser-um-problema-em-seu-ecommerce.jpeg")
+
+
+menu = st.sidebar.selectbox("Navegação:", [
+    "Home",
     "Cadastrar Cliente",
     "Adicionar Produto",
-    "Listar Produtos",
-    "Listar Clientes",
-    "Editar Produto",
-    "Excluir Produto",
+    "Listagem e Edição de Produtos",
+    "Listagem e Edição de Clientes",
     "Realizar Venda"
 ])
+
+
 
 
 def connect_db():
     return sqlite3.connect("estoX.db")
 
-if menu == "Cadastrar Cliente":
-    st.subheader("Cadastro o seu cliente")
 
-    with st.form(key="form_cliente"):
-        nome = st.text_input("Nome do Cliente:")
-        telefone = st.text_input("Telefone:")
-        data_nascimento = st.date_input("Data de Nascimento:")
-        cpf = st.text_input("CPF (Somente Números):")
 
-        botao_submit = st.form_submit_button("Cadastrar Cliente")
+if menu == "Home":
+    st.title("Bem Vindo ao EstoX")
+    st.subheader("Gerencie o estoque da sua loja com o melhor dos gerenciadores do mercado!")
+    st.image("https://img.freepik.com/vetores-premium/trabalhadores-do-armazem-verificam-os-niveis-de-estoque-de-itens-nas-prateleiras-gerenciamento-de-estoque-e-ilustracao-vetorial-de-controle-de-estoque_327176-1435.jpg?w=2000",
+            use_container_width=True)
+    st.write("""
+    O estoX é um gerenciador de estoque que lhe permite planejar, controlar e otimizar de forma dinâmica seus clientes e produtos.
+            Desfrute de nossas funcionalidades na aba ao lado.
+    """)
 
-    if botao_submit:
-        if nome and telefone and data_nascimento and cpf:
-            try:
-                funcoes.adicionar_clientes(nome, telefone, data_nascimento, cpf)
-                st.success("Cliente cadastrado com sucesso!")
-            except sqlite3.Error as erro:
-                st.error(f"Erro ao salvar no banco de dados: {erro}")
-        else:
-            st.error("Por favor, preencha todos os campos corretamente!")
 
+elif menu == "Cadastrar Cliente":
+    IncluirClientePage()
+   
 elif menu == "Adicionar Produto":
-    st.subheader("Cadastre o seu produto")
+    CadatrarProdutosPage()
 
-    with st.form(key="form_produto"):
-        nome = st.text_input("Nome do Produto:")
-        marca = st.text_input("Marca:")
-        categoria = st.text_input("Categoria:")
-        lote = st.text_input("Lote:")
-        validade = st.date_input("Data de Validade:")
-        quantidade = st.number_input("Quantidade:", min_value=0)
+elif menu == "Listagem e Edição de Produtos":
+    ListarProdutosPage()
 
-        botao_submit = st.form_submit_button("Cadastrar Produto")
-
-    if botao_submit:
-        if nome and marca and categoria and lote and validade and quantidade:
-            resultado = adicionar_produtos(nome, marca, categoria, lote, validade, quantidade)
-            if resultado == "produto adicionado com sucesso!":
-                st.success(resultado)
-            else:
-                st.error(resultado)
-        else:
-            st.error("Por favor, preencha todos os campos corretamente!")
-
-elif menu == "Listar Produtos":
-    st.subheader("Lista de Produtos")
-    produtos = listar_produtos()
-    if produtos:
-        df_produtos = pd.DataFrame(produtos, columns=["ID", "Nome", "Marca", "Categoria", "Quantidade", "Lote", "Validade"])
-        st.table(df_produtos)
-    else:
-        st.error("Nenhum produto encontrado!")
+elif menu == "Listagem e Edição de Clientes":
+    ListarClientesPage()
 
 
-elif menu == "Listar Clientes":
-    st.subheader("Lista de Clientes")
-    clientes = listar_clientes()
-    if clientes:
-        df_clientes = pd.DataFrame(clientes, columns=["ID", "Nome", "Telefone", "Data de Nascimento", "CPF"])
-        st.table(df_clientes)
-    else:
-        st.error("Nenhum cliente encontrado!")
+

@@ -2,13 +2,12 @@ import sqlite3
 from datetime import datetime
 
 
+
 def adicionar_clientes(nome, telefone, data_nascimento, cpf):
     if not validar_cpf(cpf):
-        return 'cpf invalido'
+        return 'CPF invalido. por favor insira um cpf com 11 digitos (apenas números)'
     if not validar_telefone(telefone):
-        return 'telefone invalido'
-    if not validar_data_nascimento(data_nascimento):
-        return 'data de nascimento invalida' 
+        return 'telefone invalido' 
     banco = None
     try:
         banco = sqlite3.connect("estoX.db")
@@ -28,8 +27,6 @@ def adicionar_clientes(nome, telefone, data_nascimento, cpf):
             banco.close()
 
 def adicionar_produtos(nome, marca, categoria, lote, validade, quantidade):
-    if not validar_validade(validade):
-        return 'data de validade inválida'
     banco = None
     try:
         banco = sqlite3.connect("estoX.db")
@@ -154,14 +151,45 @@ def listar_clientes():
         cursor = banco.cursor()
 
         cursor.execute("SELECT * FROM clientes")
-        produtos = cursor.fetchall()
-        return produtos
+        clientes = cursor.fetchall()
+        return clientes
     except sqlite3.Error as erro:
         return f"Erro ao listar clientes: {erro}"
     finally:
         if banco:
             banco.close()
 
+def editar_clientes(id, novo_telefone):
+    banco = None
+    try:
+        banco = sqlite3.connect("estoX.db")
+        cursor = banco.cursor()
+        cursor.execute("SELECT nome, telefone From clientes Where id = ?",(id))
+        produto = cursor.fetchone()
+        if produto is None:
+            print ( f"produto com {id} não encontrado.")
+        else:
+            nome_do_produto, telefone_anterior = produto
+            print (f"cliente encontrado: {nome_do_produto}")
+            print (f" telefone anterior: {telefone_anterior} | telefone atual {novo_telefone}")
+        
+        
+        cursor.execute("""
+                    
+                UPDATE clientes
+                SET telefone = ? 
+                WHERE id = ?
+                    
+                """,(novo_telefone, id))
+    
+        banco.commit()
+    except sqlite3.Error as erro:
+        if banco:
+            banco.rollback()
+            return f'erro ao editar o cliente: {erro}'
+    finally:
+        if banco:
+            banco.close()
 
 #validadores
 def validar_telefone(telefone):
@@ -171,16 +199,17 @@ def validar_cpf(cpf):
     return cpf.isdigit() and len(cpf) == 11
 
 
-def validar_data_nascimento(data_nascimento):
-    try:
-        datetime.strptime(data_nascimento, "%d/%m/%Y")
-        return True
-    except ValueError:
-        return False
+# def validar_data_nascimento(data_nascimento):
+#     try:
+#         datetime.strptime(data_nascimento, "%d/%m/%Y")
+#         return True
+#     except ValueError:
+#         return False
        
-def validar_validade(validade):
-    try:
-        datetime.strptime(validade, "%d/%m/%Y")
-        return True
-    except ValueError:
-        return False
+# def validar_validade(validade):
+#     try:
+#         datetime.strptime("validade", "%d/%m/%Y")
+#         return True
+#     except ValueError:
+#         return False
+    
