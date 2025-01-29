@@ -107,13 +107,13 @@ def excluir_produto(id,nome):
         if banco:
             banco.close()
 
-def realizar_venda(valor, quantidade, id_cliente, id_produto):
+def realizar_venda(valor, quantidade, cpf, id_produto):
     banco = None
     try:
         banco = sqlite3.connect("estoX.db")
         cursor = banco.cursor()
 
-        cursor.execute("SELECT * FROM clientes WHERE id = ?", (id_cliente,))
+        cursor.execute("SELECT * FROM clientes WHERE cpf = ?", (cpf,))
         cliente = cursor.fetchone()
         if not cliente:
             return "Cliente não encontrado."
@@ -125,11 +125,11 @@ def realizar_venda(valor, quantidade, id_cliente, id_produto):
         if produto[0] < quantidade:
             return "Quantidade em estoque insuficiente."
         
-        data_atual = datetime.now().strftime("%d/%m/%Y")
+        data_atual = datetime.now().strftime("%d/%m/%Y, %H:%M:%S")
         cursor.execute("""
             INSERT INTO vendas (valor, data, id_cliente, id_produto)
             VALUES (?, ?, ?, ?)
-        """, (valor, data_atual, id_cliente, id_produto))
+        """, (valor, data_atual, cpf, id_produto))
 
         nova_quantidade = produto[0] - quantidade
         cursor.execute("UPDATE produtos SET quantidade = ? WHERE id = ?", (nova_quantidade, id_produto))

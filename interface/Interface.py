@@ -11,18 +11,18 @@ from pages.produtos.cad_produto import CadatrarProdutosPage
 from pages.produtos.list_produtos import ListarProdutosPage
 from pages.clientes.cad_clientes import IncluirClientePage
 from pages.clientes.list_clientes import ListarClientesPage
-
+from pages.vendas.realizar_vendas import RealizarVendaPage
 
 
 imagem = st.sidebar.image("https://sege.srv.br/wp-content/uploads/2021/10/5ee8e10210dbd8439785751b_5daa1277c1c1cb186839b46f_a-gestao-de-estoque-nao-pode-ser-um-problema-em-seu-ecommerce.jpeg")
 
 
-menu = st.sidebar.selectbox("Navegação:", [
+menu = st.sidebar.selectbox("Menu de Cadastros e Vendas:", [
     "Home",
     "Cadastrar Cliente",
-    "Adicionar Produto",
     "Listagem e Edição de Produtos",
     "Listagem e Edição de Clientes",
+    "Adicionar Produto",
     "Realizar Venda"
 ])
 
@@ -58,4 +58,6 @@ elif menu == "Listagem e Edição de Clientes":
     ListarClientesPage()
 
 
+elif menu == "Realizar Venda":
+    RealizarVendaPage()
 
