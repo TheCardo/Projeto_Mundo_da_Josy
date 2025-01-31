@@ -92,7 +92,7 @@ def editar_produtos(id, nova_quantidade):
         if banco:
             banco.close()
 
-def excluir_produto(id,nome):
+def excluir_produto(id,):
     banco = None
     try:
         banco = sqlite3.connect("estoX.db")
@@ -159,39 +159,40 @@ def listar_clientes():
         if banco:
             banco.close()
 
-def editar_clientes(id, novo_telefone):
+def editar_clientes(id, nome_refatorado, telefone_refatorado, cpf_refatorado, data_nascimento_refatorado):
     banco = None
     try:
         banco = sqlite3.connect("estoX.db")
         cursor = banco.cursor()
-        cursor.execute("SELECT nome, telefone From clientes Where id = ?",(id))
-        produto = cursor.fetchone()
-        if produto is None:
-            print ( f"produto com {id} não encontrado.")
-        else:
-            nome_do_produto, telefone_anterior = produto
-            print (f"cliente encontrado: {nome_do_produto}")
-            print (f" telefone anterior: {telefone_anterior} | telefone atual {novo_telefone}")
-        
-        
+        cursor.execute("SELECT * FROM clientes WHERE id = ?", (id,))
+        cliente = cursor.fetchone()
+
+        if not cliente:
+            return "Cliente não encontrado."
+
         cursor.execute("""
-                    
-                UPDATE clientes
-                SET telefone = ? 
-                WHERE id = ?
-                    
-                """,(novo_telefone, id))
-    
+            UPDATE clientes
+            SET nome = ?, telefone = ?, cpf = ?, data_nascimento = ?
+            WHERE id = ?
+        """, (nome_refatorado, telefone_refatorado, cpf_refatorado, data_nascimento_refatorado, id))
+
         banco.commit()
+        return "Cliente atualizado com sucesso!"
     except sqlite3.Error as erro:
         if banco:
             banco.rollback()
-            return f'erro ao editar o cliente: {erro}'
+        return f"Erro ao editar o cliente: {erro}"
     finally:
         if banco:
             banco.close()
 
-#validadores
+
+
+
+
+
+
+
 def validar_telefone(telefone):
     return telefone.isdigit() and len(telefone) == 11
 
@@ -213,3 +214,4 @@ def validar_cpf(cpf):
 #     except ValueError:
 #         return False
     
+editar_clientes("8", "matheus","81992456976", "24367845321", "25/02/2005")

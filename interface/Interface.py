@@ -14,10 +14,10 @@ from pages.clientes.list_clientes import ListarClientesPage
 from pages.vendas.realizar_vendas import RealizarVendaPage
 
 
-imagem = st.sidebar.image("https://sege.srv.br/wp-content/uploads/2021/10/5ee8e10210dbd8439785751b_5daa1277c1c1cb186839b46f_a-gestao-de-estoque-nao-pode-ser-um-problema-em-seu-ecommerce.jpeg")
+imagem = st.sidebar.image("https://cdn-icons-png.flaticon.com/512/2245/2245058.png", use_container_width=False)
 
 
-menu = st.sidebar.selectbox("Menu de Cadastros e Vendas:", [
+menu = st.sidebar.selectbox("📝 Menu de Cadastros e Vendas:", [
     "Home",
     "Cadastrar Cliente",
     "Listagem e Edição de Produtos",
@@ -25,8 +25,14 @@ menu = st.sidebar.selectbox("Menu de Cadastros e Vendas:", [
     "Adicionar Produto",
     "Realizar Venda"
 ])
+imagem = st.sidebar.image("https://cdn-icons-png.flaticon.com/512/2782/2782122.png", use_container_width=False)
+DashBoard = st.sidebar.selectbox("📈 Visualização de Dashboards: ", [
+    "Visão Geral",
+    "Análise de Produtos ",
+    "Análise de Clientes",
+    "Análise de Estoque"
 
-
+])
 
 
 def connect_db():
@@ -37,8 +43,8 @@ def connect_db():
 if menu == "Home":
     st.title("Bem Vindo ao EstoX")
     st.subheader("Gerencie o estoque da sua loja com o melhor dos gerenciadores do mercado!")
-    st.image("https://img.freepik.com/vetores-premium/trabalhadores-do-armazem-verificam-os-niveis-de-estoque-de-itens-nas-prateleiras-gerenciamento-de-estoque-e-ilustracao-vetorial-de-controle-de-estoque_327176-1435.jpg?w=2000",
-            use_container_width=True)
+    st.image("https://cdn-icons-png.flaticon.com/512/18715/18715864.png",
+            use_container_width=False)
     st.write("""
     O estoX é um gerenciador de estoque que lhe permite planejar, controlar e otimizar de forma dinâmica seus clientes e produtos.
             Desfrute de nossas funcionalidades na aba ao lado.

@@ -99,7 +99,7 @@ def editar_produtos(id, nova_quantidade):
         if banco:
             banco.close()
 
-def excluir_cliente(id, nome):
+def excluir_cliente(id,):
     banco = None
     try:
         banco = sqlite3.connect("estoX.db")
@@ -115,7 +115,7 @@ def excluir_cliente(id, nome):
         if banco:
             banco.close()
 
-def excluir_produto(id,nome):
+def excluir_produto(id,):
     banco = None
     try:
         banco = sqlite3.connect("estoX.db")
@@ -214,3 +214,4 @@ def editar_clientes(id, novo_telefone):
     finally:
         if banco:
             banco.close()
+
