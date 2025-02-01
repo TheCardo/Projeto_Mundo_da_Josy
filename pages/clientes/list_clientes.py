@@ -1,20 +1,4 @@
-import streamlit as st 
-import pandas as pd
-import sys
-import os
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
-from pacote.sub_pacote.funcoes import listar_clientes, editar_clientes
-from App import excluir_cliente
 
-
-import streamlit as st 
-import pandas as pd
-import sys
-import os
-
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
-from pacote.sub_pacote.funcoes import listar_clientes
-from App import excluir_cliente
 import streamlit as st 
 import pandas as pd
 import sys
