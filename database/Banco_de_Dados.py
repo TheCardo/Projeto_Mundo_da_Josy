@@ -1,14 +1,14 @@
 import sqlite3
-banco = sqlite3.connect("Mundo_da_Josy.db")
+banco = sqlite3.connect("estoX.db")
 cursor = banco.cursor()
 
 cursor.execute('''
 CREATE TABLE IF NOT EXISTS clientes (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id INTEGER AUTOINCREMENT,
     nome TEXT NOT NULL,
     telefone INTEGER NOT NULL,
     data_nascimento DATE NOT NULL,
-    cpf INTEGER NOT NULL)
+    cpf PRIMARY KEY INTEGER NOT NULL)
                
 ''')
 
@@ -29,9 +29,9 @@ CREATE TABLE IF NOT EXISTS vendas (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     valor REAL NOT NULL,
     data DATE NOT NULL,
-    id_cliente INTEGER,
+    cpf_cliente INTEGER,
     id_produto INTEGER,
-    FOREIGN KEY(id_cliente) REFERENCES clientes(id),
+    FOREIGN KEY(cpf_cliente) REFERENCES clientes(cpf),
     FOREIGN KEY(id_produto) REFERENCES produtos(id))
                
 ''')
