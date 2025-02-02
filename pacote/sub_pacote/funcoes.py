@@ -186,18 +186,61 @@ def editar_clientes(id, nome_refatorado, telefone_refatorado, cpf_refatorado, da
         if banco:
             banco.close()
 
-
-
-
-
-
-
-
 def validar_telefone(telefone):
     return telefone.isdigit() and len(telefone) == 11
 
 def validar_cpf(cpf):
     return cpf.isdigit() and len(cpf) == 11
+
+def vendas_totais_mes():
+    banco = sqlite3.connect("estoX.db")
+    cursor = banco.cursor()
+    mes_atual = datetime.now().strftime("%m/%Y")
+    cursor.execute("""
+        SELECT SUM(valor) FROM vendas
+        WHERE strftime('%m/%Y', data) = ?
+    """, (mes_atual,))
+    resultado = cursor.fetchone()[0]
+    banco.close()
+    return resultado if resultado else 0
+
+def produtos_mais_vendidos():
+    banco = sqlite3.connect("estoX.db")
+    cursor = banco.cursor()
+    cursor.execute("""
+        SELECT p.nome, COUNT(v.id_produto) as total_vendas
+        FROM vendas v
+        JOIN produtos p ON v.id_produto = p.id
+        GROUP BY v.id_produto
+        ORDER BY total_vendas DESC
+        LIMIT 5
+    """)
+    resultado = cursor.fetchall()
+    banco.close()
+    return resultado
+
+def vendas_arrecadadas():
+    banco = sqlite3.connect("estoX.db")
+    cursor = banco.cursor()
+    cursor.execute("SELECT SUM(valor) FROM vendas")
+    resultado = cursor.fetchone()[0]
+    banco.close()
+    return resultado if resultado else 0
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 # def validar_data_nascimento(data_nascimento):
