@@ -1,6 +1,9 @@
 import sqlite3
 from datetime import datetime
+import pandas as pd
 
+def connect_db():
+    return sqlite3.connect("estoX.db")
 
 
 def adicionar_clientes(nome, telefone, data_nascimento, cpf):
@@ -10,7 +13,7 @@ def adicionar_clientes(nome, telefone, data_nascimento, cpf):
         return 'telefone invalido' 
     banco = None
     try:
-        banco = sqlite3.connect("estoX.db")
+        banco = connect_db()
         cursor = banco.cursor()
 
         cursor.execute("""INSERT INTO clientes (nome, telefone, data_nascimento, cpf)
@@ -29,7 +32,7 @@ def adicionar_clientes(nome, telefone, data_nascimento, cpf):
 def adicionar_produtos(nome, marca, categoria, lote, validade, quantidade):
     banco = None
     try:
-        banco = sqlite3.connect("estoX.db")
+        banco = connect_db()
         cursor = banco.cursor()
 
         cursor.execute("""INSERT INTO produtos (nome, marca, categoria, lote, validade, quantidade)
@@ -48,7 +51,7 @@ def adicionar_produtos(nome, marca, categoria, lote, validade, quantidade):
 def listar_produtos():
     banco = None
     try:
-        banco = sqlite3.connect("estoX.db")
+        banco = connect_db()
         cursor = banco.cursor()
 
         cursor.execute('SELECT * FROM produtos')
@@ -63,7 +66,7 @@ def listar_produtos():
 def editar_produtos(id, nova_quantidade):
     banco = None
     try:
-        banco = sqlite3.connect("estoX.db")
+        banco = connect_db()
         cursor = banco.cursor()
         cursor.execute("SELECT nome, quantidade From produtos Where id = ?",(id,))
         produto = cursor.fetchone()
@@ -95,7 +98,7 @@ def editar_produtos(id, nova_quantidade):
 def excluir_produto(id,):
     banco = None
     try:
-        banco = sqlite3.connect("estoX.db")
+        banco = connect_db()
         cursor = banco.cursor()
         cursor.execute (' DELETE FROM produtos WHERE id = ?',(id,))
         banco.commit()
@@ -110,7 +113,7 @@ def excluir_produto(id,):
 def realizar_venda(valor, quantidade, cpf, id_produto):
     banco = None
     try:
-        banco = sqlite3.connect("estoX.db")
+        banco = connect_db()
         cursor = banco.cursor()
 
         cursor.execute("SELECT * FROM clientes WHERE cpf = ?", (cpf,))
@@ -147,7 +150,7 @@ def realizar_venda(valor, quantidade, cpf, id_produto):
 def listar_clientes():
     banco = None
     try:
-        banco = sqlite3.connect("estoX.db")
+        banco = connect_db()
         cursor = banco.cursor()
 
         cursor.execute("SELECT * FROM clientes")
@@ -162,7 +165,7 @@ def listar_clientes():
 def editar_clientes(id, nome_refatorado, telefone_refatorado, cpf_refatorado, data_nascimento_refatorado):
     banco = None
     try:
-        banco = sqlite3.connect("estoX.db")
+        banco = connect_db()
         cursor = banco.cursor()
         cursor.execute("SELECT * FROM clientes WHERE id = ?", (id,))
         cliente = cursor.fetchone()
@@ -193,19 +196,20 @@ def validar_cpf(cpf):
     return cpf.isdigit() and len(cpf) == 11
 
 def vendas_totais_mes():
-    banco = sqlite3.connect("estoX.db")
+    banco = connect_db()
     cursor = banco.cursor()
-    mes_atual = datetime.now().strftime("%m/%Y")
     cursor.execute("""
-        SELECT SUM(valor) FROM vendas
-        WHERE strftime('%m/%Y', data) = ?
-    """, (mes_atual,))
-    resultado = cursor.fetchone()[0]
+        SELECT strftime('%m/%Y', data) as mes_ano, SUM(valor) 
+        FROM vendas 
+        GROUP BY mes_ano 
+        ORDER BY data
+    """)
+    resultado = cursor.fetchall()
     banco.close()
-    return resultado if resultado else 0
+    return pd.DataFrame(resultado, columns=["Mês/Ano", "Total Vendas"])
 
 def produtos_mais_vendidos():
-    banco = sqlite3.connect("estoX.db")
+    banco = connect_db()
     cursor = banco.cursor()
     cursor.execute("""
         SELECT p.nome, COUNT(v.id_produto) as total_vendas
@@ -217,22 +221,58 @@ def produtos_mais_vendidos():
     """)
     resultado = cursor.fetchall()
     banco.close()
-    return resultado
+    return pd.DataFrame(resultado, columns=["Produto", "Quantidade Vendida"])
 
-def vendas_arrecadadas():
-    banco = sqlite3.connect("estoX.db")
+def clientes_mais_compraram():
+    banco = connect_db()
     cursor = banco.cursor()
-    cursor.execute("SELECT SUM(valor) FROM vendas")
+    cursor.execute("""
+        SELECT c.nome, COUNT(v.id) as total_compras, SUM(v.valor) as total_gasto
+        FROM vendas v
+        JOIN clientes c ON v.id_cliente = c.id
+        GROUP BY v.id_cliente
+        ORDER BY total_gasto DESC
+        LIMIT 5
+    """)
+    resultado = cursor.fetchall()
+    banco.close()
+    return pd.DataFrame(resultado, columns=["Cliente", "Total Compras", "Total Gasto"])
+
+def ticket_medio():
+    banco = connect_db()
+    cursor = banco.cursor()
+    cursor.execute("""
+        SELECT AVG(total_gasto) FROM (
+            SELECT SUM(valor) as total_gasto FROM vendas GROUP BY id_cliente
+        )
+    """)
     resultado = cursor.fetchone()[0]
     banco.close()
     return resultado if resultado else 0
 
+def produtos_perto_validade():
+    banco = connect_db()
+    cursor = banco.cursor()
+    cursor.execute("""
+        SELECT nome, validade FROM produtos 
+        WHERE validade <= date('now', '+30 days')
+        ORDER BY validade ASC
+    """)
+    resultado = cursor.fetchall()
+    banco.close()
+    return pd.DataFrame(resultado, columns=["Produto", "Validade"])
 
-
-
-
-
-
+def produtos_baixo_estoque():
+    banco = connect_db()
+    cursor = banco.cursor()
+    cursor.execute("""
+        SELECT nome, quantidade FROM produtos 
+        WHERE quantidade <= 5
+        ORDER BY quantidade ASC
+    """)
+    resultado = cursor.fetchall()
+    banco.close()
+    return pd.DataFrame(resultado, columns=["Produto", "Quantidade"])
 
 
 
