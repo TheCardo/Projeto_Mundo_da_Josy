@@ -163,33 +163,56 @@ def listar_clientes():
     finally:
         if banco:
             banco.close()
-
-def editar_clientes(id, nome_refatorado, telefone_refatorado, cpf_refatorado, data_nascimento_refatorado):
-    banco = None
+#edição de clientes
+def editar_nome_cliente(id, novo_nome):
     try:
         banco = connect_db()
         cursor = banco.cursor()
-        cursor.execute("SELECT * FROM clientes WHERE id = ?", (id,))
-        cliente = cursor.fetchone()
-
-        if not cliente:
-            return "Cliente não encontrado."
-
-        cursor.execute("""
-            UPDATE clientes
-            SET nome = ?, telefone = ?, cpf = ?, data_nascimento = ?
-            WHERE id = ?
-        """, (nome_refatorado, telefone_refatorado, cpf_refatorado, data_nascimento_refatorado, id))
-
+        cursor.execute("UPDATE clientes SET nome = ? WHERE id = ?", (novo_nome, id))
         banco.commit()
-        return "Cliente atualizado com sucesso!"
+        return "Nome atualizado com sucesso!"
     except sqlite3.Error as erro:
-        if banco:
-            banco.rollback()
-        return f"Erro ao editar o cliente: {erro}"
+        return f"Erro ao editar o nome: {erro}"
     finally:
-        if banco:
-            banco.close()
+        banco.close()
+
+def editar_telefone_cliente(id, novo_telefone):
+    try:
+        banco = connect_db()
+        cursor = banco.cursor()
+        cursor.execute("UPDATE clientes SET telefone = ? WHERE id = ?", (novo_telefone, id))
+        banco.commit()
+        return "Telefone atualizado com sucesso!"
+    except sqlite3.Error as erro:
+        return f"Erro ao editar o telefone: {erro}"
+    finally:
+        banco.close()
+
+def editar_cpf_cliente(id, novo_cpf):
+    try:
+        banco = connect_db()
+        cursor = banco.cursor()
+        cursor.execute("UPDATE clientes SET cpf = ? WHERE id = ?", (novo_cpf, id))
+        banco.commit()
+        return "CPF atualizado com sucesso!"
+    except sqlite3.Error as erro:
+        return f"Erro ao editar o CPF: {erro}"
+    finally:
+        banco.close()
+
+def editar_data_nascimento_cliente(id, nova_data_nascimento):
+    try:
+        banco = connect_db()
+        cursor = banco.cursor()
+        cursor.execute("UPDATE clientes SET data_nascimento = ? WHERE id = ?", (nova_data_nascimento, id))
+        banco.commit()
+        return "Data de nascimento atualizada com sucesso!"
+    except sqlite3.Error as erro:
+        return f"Erro ao editar a data de nascimento: {erro}"
+    finally:
+        banco.close()
+###############################################
+
 #validações
 def validar_telefone(telefone):
     return telefone.isdigit() and len(telefone) == 11
