@@ -14,7 +14,7 @@ from pages.vendas.realizar_vendas import RealizarVendaPage
 from pages.Dashboards.analise_geral.visã0_geral import VisaoGeralPage
 from pages.Dashboards.analise_clientes.cliente_dashboard import AnaliseClientesPage
 from pages.Dashboards.analise_estoque.estoque_dashboard import AnaliseEstoquePage
-
+from pages.Dashboards.analise_produtos.produtos_dashboards import AnaliseProdutosPage
 
 if "selecao_menu" not in st.session_state:
     st.session_state.selecao_menu = "menu"
@@ -80,3 +80,5 @@ elif st.session_state.selecao_menu == "dashboard":
         AnaliseClientesPage()
     elif DashBoard == "Análise de Estoque":
         AnaliseEstoquePage()
+    elif DashBoard == "Análise de Produtos":
+        AnaliseProdutosPage()

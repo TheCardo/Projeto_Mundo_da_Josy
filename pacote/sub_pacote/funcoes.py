@@ -6,6 +6,8 @@ def connect_db():
     return sqlite3.connect("estoX.db")
 
 
+
+#CRUD
 def adicionar_clientes(nome, telefone, data_nascimento, cpf):
     if not validar_cpf(cpf):
         return 'CPF invalido. por favor insira um cpf com 11 digitos (apenas números)'
@@ -188,13 +190,13 @@ def editar_clientes(id, nome_refatorado, telefone_refatorado, cpf_refatorado, da
     finally:
         if banco:
             banco.close()
-
+#validações
 def validar_telefone(telefone):
     return telefone.isdigit() and len(telefone) == 11
 
 def validar_cpf(cpf):
     return cpf.isdigit() and len(cpf) == 11
-
+#consultas para a interface gráfica
 def vendas_totais_mes():
     banco = connect_db()
     cursor = banco.cursor()
@@ -274,27 +276,17 @@ def produtos_baixo_estoque():
     banco.close()
     return pd.DataFrame(resultado, columns=["Produto", "Quantidade"])
 
-
-
-
-
-
-
-
-
-
-# def validar_data_nascimento(data_nascimento):
-#     try:
-#         datetime.strptime(data_nascimento, "%d/%m/%Y")
-#         return True
-#     except ValueError:
-#         return False
-       
-# def validar_validade(validade):
-#     try:
-#         datetime.strptime("validade", "%d/%m/%Y")
-#         return True
-#     except ValueError:
-#         return False
-    
-editar_clientes("8", "matheus","81992456976", "24367845321", "25/02/2005")
+def produtos_menos_vendidos():
+    banco = connect_db()
+    cursor = banco.cursor()
+    cursor.execute("""
+        SELECT p.nome, COUNT(v.id_produto) as total_vendas
+        FROM vendas v
+        JOIN produtos p ON v.id_produto = p.id
+        GROUP BY v.id_produto
+        ORDER BY total_vendas ASC
+        LIMIT 5
+    """)
+    resultado = cursor.fetchall()
+    banco.close()
+    return pd.DataFrame(resultado, columns=["Produto", "Quantidade Vendida"])
