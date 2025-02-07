@@ -163,6 +163,9 @@ def listar_clientes():
     finally:
         if banco:
             banco.close()
+
+
+
 #edição de clientes ---------------------------------------------------
 def editar_nome_cliente(id, novo_nome):
     try:
@@ -213,12 +216,90 @@ def editar_data_nascimento_cliente(id, nova_data_nascimento):
         banco.close()
 #----------------------------------------------------------------------
 
+#edição de produtos ---------------------------------------------------
+
+def editar_nome_produto(id, novo_nome):
+    try:
+        banco = connect_db()
+        cursor = banco.cursor()
+        cursor.execute("UPDATE produtos SET nome = ? WHERE id = ?", (novo_nome, id))
+        banco.commit()
+        return "Nome atualizado com sucesso!"
+    except sqlite3.Error as erro:
+        return f"Erro ao editar o nome: {erro}"
+    finally:
+        banco.close()
+
+def editar_marca_produto(id, nova_marca):
+    try:
+        banco = connect_db()
+        cursor = banco.cursor()
+        cursor.execute("UPDATE produtos SET marca = ? WHERE id = ?", (nova_marca, id))
+        banco.commit()
+        return "Marca atualizada com sucesso!"
+    except sqlite3.Error as erro:
+        return f"Erro ao editar a marca: {erro}"
+    finally:
+        banco.close()
+
+def editar_categoria_produto(id, nova_categoria):
+    try:
+        banco = connect_db()
+        cursor = banco.cursor()
+        cursor.execute("UPDATE produtos SET categoria = ? WHERE id = ?", (nova_categoria, id))
+        banco.commit()
+        return "Categoria atualizada com sucesso!"
+    except sqlite3.Error as erro:
+        return f"Erro ao editar a categoria: {erro}"
+    finally:
+        banco.close()
+
+def editar_lote_produto(id, novo_lote):
+    try:
+        banco = connect_db()
+        cursor = banco.cursor()
+        cursor.execute("UPDATE produtos SET lote = ? WHERE id = ?", (novo_lote, id))
+        banco.commit()
+        return "Lote atualizado com sucesso!"
+    except sqlite3.Error as erro:
+        return f"Erro ao editar o lote: {erro}"
+    finally:
+        banco.close()
+
+def editar_validade_produto(id, nova_validade):
+    try:
+        banco = connect_db()
+        cursor = banco.cursor()
+        cursor.execute("UPDATE produtos SET validade = ? WHERE id = ?", (nova_validade, id))
+        banco.commit()
+        return "Data de validade atualizada com sucesso!"
+    except sqlite3.Error as erro:
+        return f"Erro ao editar a validade: {erro}"
+    finally:
+        banco.close()
+
+def editar_quantidade_produto(id, nova_quantidade):
+    try:
+        banco = connect_db()
+        cursor = banco.cursor()
+        cursor.execute("UPDATE produtos SET quantidade = ? WHERE id = ?", (nova_quantidade, id))
+        banco.commit()
+        return "Quantidade atualizada com sucesso!"
+    except sqlite3.Error as erro:
+        return f"Erro ao editar a quantidade: {erro}"
+    finally:
+        banco.close()
+#-----------------------------------------------------------------------
+
+
 #validações
 def validar_telefone(telefone):
     return telefone.isdigit() and len(telefone) == 11
 
 def validar_cpf(cpf):
     return cpf.isdigit() and len(cpf) == 11
+
+
 #consultas para a interface gráfica
 def vendas_totais_mes():
     banco = connect_db()
