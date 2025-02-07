@@ -1,14 +1,16 @@
 import streamlit as st 
 import pandas as pd
-import sqlite3
 import sys
 import os
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from App import adicionar_produtos, listar_clientes, listar_produtos
-from pacote.sub_pacote import funcoes
-from datetime import datetime
+from pacote.sub_pacote.funcoes import adicionar_produtos, listar_produtos
 
+def atualizar_produtos():
+    st.session_state.produtos = listar_produtos()
+
+if "produtos" not in st.session_state:
+    atualizar_produtos()
 
 def CadatrarProdutosPage():
     st.subheader("Cadastre o seu produto")
@@ -25,8 +27,9 @@ def CadatrarProdutosPage():
     if botao_submit:
         if nome and marca and categoria and lote and validade and quantidade:
             resultado = adicionar_produtos(nome, marca, categoria, lote, validade, quantidade)
-            if resultado == "produto adicionado com sucesso!":
+            if resultado == "Produto adicionado com sucesso!":
                 st.success(resultado)
+                atualizar_produtos()  
             else:
                 st.error(resultado)
         else:

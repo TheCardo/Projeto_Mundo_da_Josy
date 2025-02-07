@@ -163,7 +163,7 @@ def listar_clientes():
     finally:
         if banco:
             banco.close()
-#edição de clientes
+#edição de clientes ---------------------------------------------------
 def editar_nome_cliente(id, novo_nome):
     try:
         banco = connect_db()
@@ -211,7 +211,7 @@ def editar_data_nascimento_cliente(id, nova_data_nascimento):
         return f"Erro ao editar a data de nascimento: {erro}"
     finally:
         banco.close()
-###############################################
+#----------------------------------------------------------------------
 
 #validações
 def validar_telefone(telefone):
@@ -313,3 +313,4 @@ def produtos_menos_vendidos():
     resultado = cursor.fetchall()
     banco.close()
     return pd.DataFrame(resultado, columns=["Produto", "Quantidade Vendida"])
+#------------------------------------------- 
