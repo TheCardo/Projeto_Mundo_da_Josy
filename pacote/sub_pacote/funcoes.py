@@ -112,42 +112,46 @@ def excluir_produto(id,):
         if banco:
             banco.close()
 
+
 def realizar_venda(valor, quantidade, cpf, id_produto):
     banco = None
     try:
-        banco = connect_db()
+        banco = sqlite3.connect("estoX.db")
         cursor = banco.cursor()
-
-        cursor.execute("SELECT * FROM clientes WHERE cpf = ?", (cpf,))
+        cursor.execute("SELECT id FROM clientes WHERE cpf = ?", (cpf,))
         cliente = cursor.fetchone()
         if not cliente:
             return "Cliente não encontrado."
-        
+        id_cliente = cliente[0]
+
         cursor.execute("SELECT quantidade FROM produtos WHERE id = ?", (id_produto,))
         produto = cursor.fetchone()
         if not produto:
             return "Produto não encontrado."
         if produto[0] < quantidade:
-            return "Quantidade em estoque insuficiente."
-        
-        data_atual = datetime.now().strftime("%d/%m/%Y, %H:%M:%S")
+            return "Quantidade insuficiente no estoque."
+
+        data_atual = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         cursor.execute("""
-            INSERT INTO vendas (valor, data, id_cliente, id_produto)
+            INSERT INTO vendas (valor, data, cpf_cliente, id_produto)
             VALUES (?, ?, ?, ?)
-        """, (valor, data_atual, cpf, id_produto))
+        """, (valor, data_atual, id_cliente, id_produto))
 
         nova_quantidade = produto[0] - quantidade
         cursor.execute("UPDATE produtos SET quantidade = ? WHERE id = ?", (nova_quantidade, id_produto))
 
         banco.commit()
         return "Venda registrada com sucesso!"
+
     except sqlite3.Error as erro:
         if banco:
             banco.rollback()
         return f"Erro ao registrar venda: {erro}"
+
     finally:
         if banco:
             banco.close()
+
 
 def listar_clientes():
     banco = None

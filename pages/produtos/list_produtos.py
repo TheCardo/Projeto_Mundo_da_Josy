@@ -23,7 +23,7 @@ def ListarProdutosPage():
     if "produtos" not in st.session_state:
         atualizar_produtos()
     if st.session_state.editando_produto is None:
-        df_produtos = pd.DataFrame(st.session_state.produtos, columns=["ID", "Nome", "Marca", "Categoria", "Lote", "Validade", "Quantidade"])
+        df_produtos = pd.DataFrame(st.session_state.produtos, columns=["ID", "Nome", "Marca", "Categoria", "Quantidade", "Lote", "Validade"])
         st.table(df_produtos)
 
         for i, row in df_produtos.iterrows():
@@ -50,17 +50,20 @@ def ListarProdutosPage():
                 "Nome": 1,
                 "Marca": 2,
                 "Categoria": 3,
-                "Lote": 4
-            }
-
+                "Quantidade": 4,
+                "Lote": 5,
+                "Validade": 6
+    }
             if campo == "Validade":
-                novo_valor = st.date_input(f"Nova {campo}", value=pd.to_datetime(produto[5]))
+                novo_valor = st.date_input(f"Nova {campo}", value=pd.to_datetime(produto[6]))
             elif campo == "Quantidade":
-                novo_valor = st.number_input(f"Nova {campo}", value=int(produto[6]), min_value=0)
+                novo_valor = st.number_input(f"Nova {campo}", value=int(produto[4]), min_value=0)
             else:
                 indice = indice_campo.get(campo)
                 novo_valor = st.text_input(f"Novo {campo}", value=produto[indice] if indice is not None else "")
 
+
+            
 
             if st.button("Salvar"):
                 if novo_valor:
