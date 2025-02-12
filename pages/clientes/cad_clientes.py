@@ -1,15 +1,17 @@
 import streamlit as st 
 import pandas as pd
-import sqlite3
 import sys
 import os
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from App import adicionar_produtos, listar_clientes, listar_produtos
-from pacote.sub_pacote import funcoes
-from App import validar_telefone, validar_cpf
+from pacote.sub_pacote.funcoes import adicionar_clientes, listar_clientes
+
+def atualizar_clientes():
+    st.session_state.clientes = listar_clientes()
 
 
+if "clientes" not in st.session_state:
+    atualizar_clientes()
 
 def IncluirClientePage():
     st.title("Cadastre o seu cliente")
@@ -25,9 +27,10 @@ def IncluirClientePage():
 
     if botao_submit:
         if nome and telefone and data_nascimento and cpf:
-            resultado = funcoes.adicionar_clientes(nome, telefone, data_nascimento, cpf)
+            resultado = adicionar_clientes(nome, telefone, data_nascimento, cpf)
             if resultado == "Cliente adicionado com sucesso!":
                 st.success(resultado)
+                atualizar_clientes()
             else:
                 st.error(resultado)
         else:

@@ -1,8 +1,13 @@
 import sqlite3
 from datetime import datetime
+import pandas as pd
+
+def connect_db():
+    return sqlite3.connect("estoX.db")
 
 
 
+#CRUD
 def adicionar_clientes(nome, telefone, data_nascimento, cpf):
     if not validar_cpf(cpf):
         return 'CPF invalido. por favor insira um cpf com 11 digitos (apenas números)'
@@ -10,7 +15,7 @@ def adicionar_clientes(nome, telefone, data_nascimento, cpf):
         return 'telefone invalido' 
     banco = None
     try:
-        banco = sqlite3.connect("estoX.db")
+        banco = connect_db()
         cursor = banco.cursor()
 
         cursor.execute("""INSERT INTO clientes (nome, telefone, data_nascimento, cpf)
@@ -29,7 +34,7 @@ def adicionar_clientes(nome, telefone, data_nascimento, cpf):
 def adicionar_produtos(nome, marca, categoria, lote, validade, quantidade):
     banco = None
     try:
-        banco = sqlite3.connect("estoX.db")
+        banco = connect_db()
         cursor = banco.cursor()
 
         cursor.execute("""INSERT INTO produtos (nome, marca, categoria, lote, validade, quantidade)
@@ -48,7 +53,7 @@ def adicionar_produtos(nome, marca, categoria, lote, validade, quantidade):
 def listar_produtos():
     banco = None
     try:
-        banco = sqlite3.connect("estoX.db")
+        banco = connect_db()
         cursor = banco.cursor()
 
         cursor.execute('SELECT * FROM produtos')
@@ -63,7 +68,7 @@ def listar_produtos():
 def editar_produtos(id, nova_quantidade):
     banco = None
     try:
-        banco = sqlite3.connect("estoX.db")
+        banco = connect_db()
         cursor = banco.cursor()
         cursor.execute("SELECT nome, quantidade From produtos Where id = ?",(id,))
         produto = cursor.fetchone()
@@ -95,7 +100,7 @@ def editar_produtos(id, nova_quantidade):
 def excluir_produto(id,):
     banco = None
     try:
-        banco = sqlite3.connect("estoX.db")
+        banco = connect_db()
         cursor = banco.cursor()
         cursor.execute (' DELETE FROM produtos WHERE id = ?',(id,))
         banco.commit()
@@ -110,7 +115,7 @@ def excluir_produto(id,):
 def realizar_venda(valor, quantidade, cpf, id_produto):
     banco = None
     try:
-        banco = sqlite3.connect("estoX.db")
+        banco = connect_db()
         cursor = banco.cursor()
 
         cursor.execute("SELECT * FROM clientes WHERE cpf = ?", (cpf,))
@@ -147,7 +152,7 @@ def realizar_venda(valor, quantidade, cpf, id_produto):
 def listar_clientes():
     banco = None
     try:
-        banco = sqlite3.connect("estoX.db")
+        banco = connect_db()
         cursor = banco.cursor()
 
         cursor.execute("SELECT * FROM clientes")
@@ -159,40 +164,135 @@ def listar_clientes():
         if banco:
             banco.close()
 
-def editar_clientes(id, nome_refatorado, telefone_refatorado, cpf_refatorado, data_nascimento_refatorado):
-    banco = None
+
+
+#edição de clientes ---------------------------------------------------
+def editar_nome_cliente(id, novo_nome):
     try:
-        banco = sqlite3.connect("estoX.db")
+        banco = connect_db()
         cursor = banco.cursor()
-        cursor.execute("SELECT * FROM clientes WHERE id = ?", (id,))
-        cliente = cursor.fetchone()
-
-        if not cliente:
-            return "Cliente não encontrado."
-
-        cursor.execute("""
-            UPDATE clientes
-            SET nome = ?, telefone = ?, cpf = ?, data_nascimento = ?
-            WHERE id = ?
-        """, (nome_refatorado, telefone_refatorado, cpf_refatorado, data_nascimento_refatorado, id))
-
+        cursor.execute("UPDATE clientes SET nome = ? WHERE id = ?", (novo_nome, id))
         banco.commit()
-        return "Cliente atualizado com sucesso!"
+        return "Nome atualizado com sucesso!"
     except sqlite3.Error as erro:
-        if banco:
-            banco.rollback()
-        return f"Erro ao editar o cliente: {erro}"
+        return f"Erro ao editar o nome: {erro}"
     finally:
-        if banco:
-            banco.close()
+        banco.close()
+
+def editar_telefone_cliente(id, novo_telefone):
+    try:
+        banco = connect_db()
+        cursor = banco.cursor()
+        cursor.execute("UPDATE clientes SET telefone = ? WHERE id = ?", (novo_telefone, id))
+        banco.commit()
+        return "Telefone atualizado com sucesso!"
+    except sqlite3.Error as erro:
+        return f"Erro ao editar o telefone: {erro}"
+    finally:
+        banco.close()
+
+def editar_cpf_cliente(id, novo_cpf):
+    try:
+        banco = connect_db()
+        cursor = banco.cursor()
+        cursor.execute("UPDATE clientes SET cpf = ? WHERE id = ?", (novo_cpf, id))
+        banco.commit()
+        return "CPF atualizado com sucesso!"
+    except sqlite3.Error as erro:
+        return f"Erro ao editar o CPF: {erro}"
+    finally:
+        banco.close()
+
+def editar_data_nascimento_cliente(id, nova_data_nascimento):
+    try:
+        banco = connect_db()
+        cursor = banco.cursor()
+        cursor.execute("UPDATE clientes SET data_nascimento = ? WHERE id = ?", (nova_data_nascimento, id))
+        banco.commit()
+        return "Data de nascimento atualizada com sucesso!"
+    except sqlite3.Error as erro:
+        return f"Erro ao editar a data de nascimento: {erro}"
+    finally:
+        banco.close()
+#----------------------------------------------------------------------
+
+#edição de produtos ---------------------------------------------------
+
+def editar_nome_produto(id, novo_nome):
+    try:
+        banco = connect_db()
+        cursor = banco.cursor()
+        cursor.execute("UPDATE produtos SET nome = ? WHERE id = ?", (novo_nome, id))
+        banco.commit()
+        return "Nome atualizado com sucesso!"
+    except sqlite3.Error as erro:
+        return f"Erro ao editar o nome: {erro}"
+    finally:
+        banco.close()
+
+def editar_marca_produto(id, nova_marca):
+    try:
+        banco = connect_db()
+        cursor = banco.cursor()
+        cursor.execute("UPDATE produtos SET marca = ? WHERE id = ?", (nova_marca, id))
+        banco.commit()
+        return "Marca atualizada com sucesso!"
+    except sqlite3.Error as erro:
+        return f"Erro ao editar a marca: {erro}"
+    finally:
+        banco.close()
+
+def editar_categoria_produto(id, nova_categoria):
+    try:
+        banco = connect_db()
+        cursor = banco.cursor()
+        cursor.execute("UPDATE produtos SET categoria = ? WHERE id = ?", (nova_categoria, id))
+        banco.commit()
+        return "Categoria atualizada com sucesso!"
+    except sqlite3.Error as erro:
+        return f"Erro ao editar a categoria: {erro}"
+    finally:
+        banco.close()
+
+def editar_lote_produto(id, novo_lote):
+    try:
+        banco = connect_db()
+        cursor = banco.cursor()
+        cursor.execute("UPDATE produtos SET lote = ? WHERE id = ?", (novo_lote, id))
+        banco.commit()
+        return "Lote atualizado com sucesso!"
+    except sqlite3.Error as erro:
+        return f"Erro ao editar o lote: {erro}"
+    finally:
+        banco.close()
+
+def editar_validade_produto(id, nova_validade):
+    try:
+        banco = connect_db()
+        cursor = banco.cursor()
+        cursor.execute("UPDATE produtos SET validade = ? WHERE id = ?", (nova_validade, id))
+        banco.commit()
+        return "Data de validade atualizada com sucesso!"
+    except sqlite3.Error as erro:
+        return f"Erro ao editar a validade: {erro}"
+    finally:
+        banco.close()
+
+def editar_quantidade_produto(id, nova_quantidade):
+    try:
+        banco = connect_db()
+        cursor = banco.cursor()
+        cursor.execute("UPDATE produtos SET quantidade = ? WHERE id = ?", (nova_quantidade, id))
+        banco.commit()
+        return "Quantidade atualizada com sucesso!"
+    except sqlite3.Error as erro:
+        return f"Erro ao editar a quantidade: {erro}"
+    finally:
+        banco.close()
+#-----------------------------------------------------------------------
 
 
-
-
-
-
-
-
+#validações
 def validar_telefone(telefone):
     return telefone.isdigit() and len(telefone) == 11
 
@@ -200,18 +300,98 @@ def validar_cpf(cpf):
     return cpf.isdigit() and len(cpf) == 11
 
 
-# def validar_data_nascimento(data_nascimento):
-#     try:
-#         datetime.strptime(data_nascimento, "%d/%m/%Y")
-#         return True
-#     except ValueError:
-#         return False
-       
-# def validar_validade(validade):
-#     try:
-#         datetime.strptime("validade", "%d/%m/%Y")
-#         return True
-#     except ValueError:
-#         return False
-    
-editar_clientes("8", "matheus","81992456976", "24367845321", "25/02/2005")
+#consultas para a interface gráfica
+def vendas_totais_mes():
+    banco = connect_db()
+    cursor = banco.cursor()
+    cursor.execute("""
+        SELECT strftime('%m/%Y', data) as mes_ano, SUM(valor) 
+        FROM vendas 
+        GROUP BY mes_ano 
+        ORDER BY data
+    """)
+    resultado = cursor.fetchall()
+    banco.close()
+    return pd.DataFrame(resultado, columns=["Mês/Ano", "Total Vendas"])
+
+def produtos_mais_vendidos():
+    banco = connect_db()
+    cursor = banco.cursor()
+    cursor.execute("""
+        SELECT p.nome, COUNT(v.id_produto) as total_vendas
+        FROM vendas v
+        JOIN produtos p ON v.id_produto = p.id
+        GROUP BY v.id_produto
+        ORDER BY total_vendas DESC
+        LIMIT 5
+    """)
+    resultado = cursor.fetchall()
+    banco.close()
+    return pd.DataFrame(resultado, columns=["Produto", "Quantidade Vendida"])
+
+def clientes_mais_compraram():
+    banco = connect_db()
+    cursor = banco.cursor()
+    cursor.execute("""
+        SELECT c.nome, COUNT(v.id) as total_compras, SUM(v.valor) as total_gasto
+        FROM vendas v
+        JOIN clientes c ON v.id_cliente = c.id
+        GROUP BY v.id_cliente
+        ORDER BY total_gasto DESC
+        LIMIT 5
+    """)
+    resultado = cursor.fetchall()
+    banco.close()
+    return pd.DataFrame(resultado, columns=["Cliente", "Total Compras", "Total Gasto"])
+
+def ticket_medio():
+    banco = connect_db()
+    cursor = banco.cursor()
+    cursor.execute("""
+        SELECT AVG(total_gasto) FROM (
+            SELECT SUM(valor) as total_gasto FROM vendas GROUP BY id_cliente
+        )
+    """)
+    resultado = cursor.fetchone()[0]
+    banco.close()
+    return resultado if resultado else 0
+
+def produtos_perto_validade():
+    banco = connect_db()
+    cursor = banco.cursor()
+    cursor.execute("""
+        SELECT nome, validade FROM produtos 
+        WHERE validade <= date('now', '+30 days')
+        ORDER BY validade ASC
+    """)
+    resultado = cursor.fetchall()
+    banco.close()
+    return pd.DataFrame(resultado, columns=["Produto", "Validade"])
+
+def produtos_baixo_estoque():
+    banco = connect_db()
+    cursor = banco.cursor()
+    cursor.execute("""
+        SELECT nome, quantidade FROM produtos 
+        WHERE quantidade <= 5
+        ORDER BY quantidade ASC
+    """)
+    resultado = cursor.fetchall()
+    banco.close()
+    return pd.DataFrame(resultado, columns=["Produto", "Quantidade"])
+
+def produtos_menos_vendidos():
+    banco = connect_db()
+    cursor = banco.cursor()
+    cursor.execute("""
+        SELECT p.nome, COUNT(v.id_produto) as total_vendas
+        FROM vendas v
+        JOIN produtos p ON v.id_produto = p.id
+        GROUP BY v.id_produto
+        ORDER BY total_vendas ASC
+        LIMIT 5
+    """)
+    resultado = cursor.fetchall()
+    banco.close()
+    return pd.DataFrame(resultado, columns=["Produto", "Quantidade Vendida"])
+#------------------------------------------- 
