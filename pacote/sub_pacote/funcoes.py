@@ -118,11 +118,11 @@ def realizar_venda(valor, quantidade, cpf, id_produto):
     try:
         banco = sqlite3.connect("estoX.db")
         cursor = banco.cursor()
-        cursor.execute("SELECT id FROM clientes WHERE cpf = ?", (cpf,))
+        cursor.execute("SELECT cpf FROM clientes WHERE cpf = ?", (cpf,))
         cliente = cursor.fetchone()
         if not cliente:
             return "Cliente não encontrado."
-        id_cliente = cliente[0]
+        cpf_cliente = cliente[0]
 
         cursor.execute("SELECT quantidade FROM produtos WHERE id = ?", (id_produto,))
         produto = cursor.fetchone()
@@ -135,7 +135,7 @@ def realizar_venda(valor, quantidade, cpf, id_produto):
         cursor.execute("""
             INSERT INTO vendas (valor, data, cpf_cliente, id_produto)
             VALUES (?, ?, ?, ?)
-        """, (valor, data_atual, id_cliente, id_produto))
+        """, (valor, data_atual, cpf_cliente, id_produto))
 
         nova_quantidade = produto[0] - quantidade
         cursor.execute("UPDATE produtos SET quantidade = ? WHERE id = ?", (nova_quantidade, id_produto))
