@@ -1,5 +1,4 @@
-
-import streamlit as st 
+import streamlit as st
 import pandas as pd
 import sys
 import os
@@ -19,30 +18,29 @@ if "editando_cliente" not in st.session_state:
 def ListarClientesPage():
     st.subheader("Lista de Clientes")
     if st.session_state.editando_cliente is None:
-        df_clientes = pd.DataFrame(st.session_state.clientes, columns=["ID", "Nome", "Telefone", "Data de Nascimento", "CPF"])
+        df_clientes = pd.DataFrame(st.session_state.clientes, columns=["CPF", "Nome", "Telefone", "Data de Nascimento"])
         st.table(df_clientes)
 
         for i, row in df_clientes.iterrows():
             col1, col2, col3 = st.columns([2, 1, 1])
             col1.text(f"{row['Nome']} / Telefone: {row['Telefone']} / CPF: ({row['CPF']})")
 
-            if col2.button("Excluir", key=f"excluir_{row['ID']}"):
-                excluir_cliente(row["ID"])
+            if col2.button("Excluir", key=f"excluir_{row['CPF']}"):
+                excluir_cliente(row["CPF"])
                 atualizar_clientes()
                 st.success(f"Cliente '{row['Nome']}' excluído com sucesso!")
                 st.rerun()
 
-            if col3.button("Editar", key=f"editar_{row['ID']}"):
-                st.session_state.editando_cliente = row["ID"]
+            if col3.button("Editar", key=f"editar_{row['CPF']}"):
+                st.session_state.editando_cliente = row["CPF"]
                 st.rerun()
 
-    
     else:
         cliente = next((c for c in st.session_state.clientes if c[0] == st.session_state.editando_cliente), None)
         if cliente:
             st.subheader(f"Editando {cliente[1]}")
             campo = st.selectbox("Escolha o campo para editar:", ["Nome", "Telefone", "CPF", "Data de Nascimento"])
-            novo_valor = st.text_input(f"Novo {campo}", value=cliente[1 if campo == "Nome" else 2 if campo == "Telefone" else 4 if campo == "CPF" else 3])
+            novo_valor = st.text_input(f"Novo {campo}", value=cliente[1 if campo == "Nome" else 2 if campo == "Telefone" else 0 if campo == "CPF" else 3])
             if st.button("Salvar"):
                 if novo_valor:
                     if campo == "Nome":
@@ -71,3 +69,5 @@ def ListarClientesPage():
             st.error("Cliente não encontrado.")
             st.session_state.editando_cliente = None
             st.rerun()
+
+

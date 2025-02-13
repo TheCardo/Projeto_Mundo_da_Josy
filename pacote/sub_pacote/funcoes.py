@@ -339,8 +339,8 @@ def clientes_mais_compraram():
     cursor.execute("""
         SELECT c.nome, COUNT(v.id) as total_compras, SUM(v.valor) as total_gasto
         FROM vendas v
-        JOIN clientes c ON v.id_cliente = c.id
-        GROUP BY v.id_cliente
+        JOIN clientes c ON cpf_cliente = c.cpf
+        GROUP BY v.cpf_cliente
         ORDER BY total_gasto DESC
         LIMIT 5
     """)
@@ -353,7 +353,7 @@ def ticket_medio():
     cursor = banco.cursor()
     cursor.execute("""
         SELECT AVG(total_gasto) FROM (
-            SELECT SUM(valor) as total_gasto FROM vendas GROUP BY id_cliente
+            SELECT SUM(valor) as total_gasto FROM vendas GROUP BY cpf_cliente
         )
     """)
     resultado = cursor.fetchone()[0]
@@ -399,3 +399,5 @@ def produtos_menos_vendidos():
     banco.close()
     return pd.DataFrame(resultado, columns=["Produto", "Quantidade Vendida"])
 #------------------------------------------- 
+
+
