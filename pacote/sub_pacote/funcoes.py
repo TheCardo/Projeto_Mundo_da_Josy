@@ -41,11 +41,11 @@ def adicionar_produtos(nome, marca, categoria, lote, validade, quantidade):
                        VALUES(?,?,?,?,?,?)
                        """,(nome, marca, categoria, lote, validade, quantidade))
         banco.commit()
-        return "produto adicionado com sucesso!"
+        return "Produto adicionado com sucesso!"
     except sqlite3.Error as erro:
         if banco:
             banco.rollback()
-        return f"Erro ao adicionar produto: {erro}"
+            return f"Erro ao adicionar produto: {erro}"
     finally:
         if banco:
             banco.close()

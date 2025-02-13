@@ -29,7 +29,7 @@ def CadatrarProdutosPage():
             resultado = adicionar_produtos(nome, marca, categoria, lote, validade, quantidade)
             if resultado == "Produto adicionado com sucesso!":
                 st.success(resultado)
-                atualizar_produtos()  
+                atualizar_produtos()
             else:
                 st.error(resultado)
         else:
