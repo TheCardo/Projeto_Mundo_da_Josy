@@ -1,9 +1,8 @@
 import streamlit as st 
 import sys
 import os
-
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from pacote.sub_pacote import funcoes
+from pacote.sub_pacote import *
 from pages.produtos.cad_produto import CadatrarProdutosPage
 from pages.produtos.list_produtos import ListarProdutosPage
 from pages.clientes.cad_clientes import IncluirClientePage

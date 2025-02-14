@@ -2,10 +2,98 @@ import sqlite3
 from datetime import datetime
 import pandas as pd
 
+
 def connect_db():
     return sqlite3.connect("estoX.db")
 
+#=========================================================================================
+banco = connect_db()
+cursor = banco.cursor()
 
+query_produtos = '''INSERT INTO produtos (nome, marca, categoria, quantidade, lote, validade) VALUES
+('Shampoo Hidratante', 'Pantene', 'Cosméticos', 15, 'A001', '2026-12-15'),
+('Condicionador Nutritivo', 'L’Oréal', 'Cosméticos', 20, 'A002', '2026-10-10'),
+('Sabonete Líquido', 'Dove', 'Higiene', 30, 'A003', '2027-05-20'),
+('Creme para Pentear', 'Salon Line', 'Beleza', 25, 'A004', '2025-11-30'),
+('Base Líquida', 'Maybelline', 'Cosméticos', 10, 'A005', '2026-08-15'),
+('Perfume Floral', 'O Boticário', 'Cuidados Pessoais', 8, 'A006', '2028-04-10'),
+('Hidratante Corporal', 'Nivea', 'Cosméticos', 18, 'A007', '2027-07-22'),
+('Pó Compacto', 'Vult', 'Beleza', 12, 'A008', '2026-09-18'),
+('Máscara de Cílios', 'Avon', 'Beleza', 14, 'A009', '2027-01-05'),
+('Batom Matte', 'MAC', 'Cosméticos', 20, 'A010', '2026-03-14'),
+('Óleo Capilar', 'Elseve', 'Cosméticos', 17, 'A011', '2027-06-30'),
+('Protetor Solar FPS 50', 'Neutrogena', 'Cuidados Pessoais', 10, 'A012', '2026-12-01'),
+('Lenços Umedecidos', 'Huggies', 'Higiene', 22, 'A013', '2027-08-12'),
+('Desodorante Roll-on', 'Rexona', 'Cuidados Pessoais', 28, 'A014', '2027-03-20'),
+('Creme Dental', 'Colgate', 'Higiene', 35, 'A015', '2028-02-28'),
+('Escova de Dentes', 'Oral-B', 'Higiene', 40, 'A016', '2030-01-01'),
+('Sabonete Esfoliante', 'Granado', 'Higiene', 16, 'A017', '2026-05-17'),
+('Kit Pincéis de Maquiagem', 'Ruby Rose', 'Beleza', 7, 'A018', '2029-07-14'),
+('Creme Antirrugas', 'La Roche-Posay', 'Cosméticos', 9, 'A019', '2028-10-30'),
+('Tônico Facial', 'The Body Shop', 'Cosméticos', 11, 'A020', '2027-09-09'),
+('Shampoo Detox', 'TRESemmé', 'Cosméticos', 18, 'A021', '2026-11-23'),
+('Máscara Capilar', 'Novex', 'Cosméticos', 14, 'A022', '2027-04-19'),
+('Gel Fixador', 'Bozzano', 'Beleza', 15, 'A023', '2027-07-07'),
+('Perfume Amadeirado', 'Natura', 'Cuidados Pessoais', 6, 'A024', '2028-05-03'),
+('Tônico Adstringente', 'Neutrogena', 'Cuidados Pessoais', 8, 'A025', '2026-12-27'),
+('Creme Hidratante para Mãos', 'Avène', 'Cosméticos', 13, 'A026', '2028-08-21'),
+('Serum Facial', 'The Ordinary', 'Cosméticos', 10, 'A027', '2029-01-09'),
+('Lápis de Olho', 'Quem Disse, Berenice?', 'Beleza', 16, 'A028', '2026-06-11'),
+('Esmalte Vermelho', 'Risqué', 'Beleza', 25, 'A029', '2027-03-15'),
+('Kit de Cuidados com a Pele', 'Mary Kay', 'Cosméticos', 5, 'A030', '2029-12-10'),
+('Sabonete Íntimo', 'Dermacyd', 'Higiene', 19, 'A031', '2028-04-22'),
+('Creme para Estrias', 'Bio-Oil', 'Cuidados Pessoais', 12, 'A032', '2027-11-30'),
+('Condicionador Matizador', 'Yellow', 'Cosméticos', 9, 'A033', '2026-09-05'),
+('Fixador de Maquiagem', 'Klass Vough', 'Beleza', 7, 'A034', '2028-03-01'),
+('Sabonete de Enxofre', 'Granado', 'Higiene', 14, 'A035', '2027-06-14'),
+('Kit de Barbear', 'Gillette', 'Cuidados Pessoais', 11, 'A036', '2026-07-07'),
+('Shampoo Anticaspa', 'Clear', 'Cosméticos', 13, 'A037', '2027-10-19'),
+('Máscara Facial de Argila', 'Lush', 'Cosméticos', 8, 'A038', '2028-01-29'),
+('Creme Clareador de Manchas', 'Nivea', 'Cosméticos', 10, 'A039', '2028-06-18'),
+('Protetor Labial', 'Bepantol', 'Cuidados Pessoais', 20, 'A040', '2029-02-05');
+'''
+
+cursor.executescript(query_produtos)
+
+banco.commit()
+banco.close()
+
+print("40 produtos adicionados com sucesso!")
+
+#=======================================================================================
+
+banco = connect_db()
+cursor = banco.cursor()
+
+query_clientes = '''INSERT INTO clientes (cpf, nome, telefone, data_nascimento) VALUES
+('12345678900', 'Ana Souza', 11987654321, '1995-06-12'),
+('23456789011', 'Bruno Lima', 11976543210, '1988-09-25'),
+('34567890122', 'Carlos Mendes', 11965432109, '1992-04-17'),
+('45678901233', 'Daniela Castro', 11954321098, '1997-11-30'),
+('56789012344', 'Eduardo Silva', 11943210987, '1985-03-05'),
+('67890123455', 'Fernanda Alves', 11932109876, '1999-07-20'),
+('78901234566', 'Gabriel Oliveira', 11921098765, '2001-01-10'),
+('89012345677', 'Helena Santos', 11910987654, '1994-05-22'),
+('90123456788', 'Igor Martins', 11999887766, '1989-10-15'),
+('01234567899', 'Juliana Pereira', 11988776655, '1996-12-08'),
+('11112222333', 'Karina Fernandes', 11977665544, '1991-02-14'),
+('22223333444', 'Lucas Costa', 11966554433, '1986-08-29'),
+('33334444555', 'Mariana Rocha', 11955443322, '1998-06-04'),
+('44445555666', 'Nathan Borges', 11944332211, '1993-09-19'),
+('55556666777', 'Olívia Ribeiro', 11933221100, '2000-11-25'),
+('66667777888', 'Paulo Teixeira', 11922110099, '1987-07-13'),
+('77778888999', 'Rafaela Nunes', 11911009988, '1995-03-07'),
+('88889999000', 'Samuel Batista', 11900998877, '1990-05-30'),
+('99990000111', 'Tatiane Moreira', 11919876543, '1997-12-02'),
+('00001111222', 'Vinícius Lopes', 11928765432, '2002-04-18');
+'''
+cursor.executescript(query_clientes)
+
+banco.commit()
+banco.close()
+
+print("20 clientes adicionados com sucesso!")
+#============================================================================================
 
 #CRUD
 def adicionar_clientes(nome, telefone, data_nascimento, cpf):

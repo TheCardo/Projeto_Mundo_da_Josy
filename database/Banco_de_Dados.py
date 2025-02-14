@@ -2,7 +2,9 @@ import sqlite3
 
 banco = sqlite3.connect("estoX.db")
 cursor = banco.cursor()
-
+# cursor.execute("DROP TABLE IF EXISTS vendas")
+# cursor.execute("DROP TABLE IF EXISTS produtos")
+# cursor.execute("DROP TABLE IF EXISTS clientes") para caso eu precise refazer as tabela
 cursor.execute('''
 CREATE TABLE IF NOT EXISTS clientes (
     cpf TEXT PRIMARY KEY,
